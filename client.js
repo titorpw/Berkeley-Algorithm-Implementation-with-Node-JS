@@ -48,7 +48,13 @@ client.connect(SERVER_PORT, SERVER_HOST, () => {
   console.log(`[${CLIENT_ID}] Waktu lokal awal: ${new Date().toLocaleString()}`);
 });
 
-const localTime = Date.now();
+let localTime = Date.now();
+
+function updateLocalTime() {
+  setInterval(() => {
+    localTime += 1000;
+  }, 1000); // setiap 5 menit
+}
 
 client.on("data", (data) => {
   const message = data.toString().trim();
@@ -89,3 +95,5 @@ client.on("close", () => {
 client.on("error", (err) => {
   console.error(`[${CLIENT_ID}] Terjadi kesalahan:`, err.message);
 });
+
+updateLocalTime();
