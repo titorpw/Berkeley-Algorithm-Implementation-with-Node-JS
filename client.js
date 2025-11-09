@@ -48,17 +48,12 @@ client.connect(SERVER_PORT, SERVER_HOST, () => {
   console.log(`[${CLIENT_ID}] Waktu lokal awal: ${new Date().toLocaleString()}`);
 });
 
-let localTime = Date.now();
-
-function updateLocalTime() {
-  setInterval(() => {
-    localTime += 1000;
-  }, 1000); // setiap 5 menit
-}
+let localOffset = 0;
 
 client.on("data", (data) => {
   const message = data.toString().trim();
-
+  let localTime = Date.now() + localOffset;
+  
   if (message === "REQ_TIME") {
     console.log(`[${CLIENT_ID}] Server meminta waktu, mengirim: ${localTime}`);
     client.write(localTime.toString());
@@ -68,7 +63,7 @@ client.on("data", (data) => {
       console.log(`[${CLIENT_ID}] Pesan tidak dikenali dari server: ${message}`);
       return;
     }
-
+    localOffset += offset;
     const adjustedTime = localTime + offset;
 
     console.log(`[${CLIENT_ID}] Offset diterima: ${offset} ms`);
@@ -95,5 +90,3 @@ client.on("close", () => {
 client.on("error", (err) => {
   console.error(`[${CLIENT_ID}] Terjadi kesalahan:`, err.message);
 });
-
-updateLocalTime();
