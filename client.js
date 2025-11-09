@@ -4,10 +4,11 @@ const fs = require("fs");
 const fsPromises = require("fs").promises;
 const WebSocket = require("ws");
 
-const SERVER_HOST = "localhost";
+const SERVER_HOST = "192.168.100.41";
+const CLIENT_HOST = "localhost";
 const SERVER_PORT = 8001;
-const HTTP_PORT = 8002;
-const WS_PORT = 8081;
+const HTTP_PORT = 8000;
+const WS_PORT = 8080;
 
 const requestListener = function (req, res) {
   res.setHeader("Content-Type", "text/html");
@@ -21,7 +22,7 @@ fsPromises
   .readFile(__dirname + "/client.html")
   .then((contents) => {
     indexFile = contents;
-    httpServer.listen(HTTP_PORT, SERVER_HOST, () => {
+    httpServer.listen(HTTP_PORT, CLIENT_HOST, () => {
       console.log(`Server is running on http://${HTTP_PORT}:${SERVER_HOST}`);
     });
   })
@@ -31,7 +32,7 @@ fsPromises
   });
 
 const wss = new WebSocket.Server({ port: WS_PORT });
-console.log(`WebSocket Server: ws://${SERVER_HOST}:${WS_PORT}`);
+console.log(`WebSocket Server: ws://${CLIENT_HOST}:${WS_PORT}`);
 
 // ID klien diambil dari argumen command line
 const CLIENT_ID = process.argv[2] ? process.argv[2] : Math.floor(Math.random() * 100);
